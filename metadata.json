@@ -1,0 +1,6 @@
+{
+  "name": "茶叶礼盒定制与询价下单系统",
+  "description": "专为茶叶产品与礼盒包装定制打造的前端客户询价与下单原型系统，涵盖客户信息、茶叶品类规格、礼盒盒型材质工艺、Logo设计稿确认、自动化阶梯算价、生产打样参数及企业批量多地址物流全流程。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
