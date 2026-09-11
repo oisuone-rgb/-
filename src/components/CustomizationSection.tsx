@@ -23,11 +23,13 @@ import {
 interface CustomizationSectionProps {
   data: CustomizationInfo;
   onChange: (updated: Partial<CustomizationInfo>) => void;
+  onOpenAICopywrite?: () => void;
 }
 
 export const CustomizationSection: React.FC<CustomizationSectionProps> = ({
   data,
-  onChange
+  onChange,
+  onOpenAICopywrite
 }) => {
   const { t } = useLanguage();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -62,17 +64,17 @@ export const CustomizationSection: React.FC<CustomizationSectionProps> = ({
   const currentStepIndex = DESIGN_STATUS_STEPS.findIndex(s => s.key === data.designStatus);
 
   return (
-    <div id="section-custom" className="bg-white rounded-2xl border border-stone-200 p-5 sm:p-7 shadow-xs">
-      <div className="flex items-center justify-between pb-4 mb-5 border-b border-stone-100">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold shrink-0">
+    <div id="section-custom" className="bg-white rounded-2xl border border-stone-200/90 p-6 sm:p-7 shadow-xs">
+      <div className="flex items-center justify-between pb-4 mb-6 border-b border-stone-100">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-emerald-800 text-white flex items-center justify-center font-bold text-sm shadow-xs font-mono shrink-0">
             4
           </div>
           <div>
-            <h2 className="text-base sm:text-lg font-bold text-stone-900">
+            <h2 className="text-base sm:text-lg font-bold text-stone-900 tracking-tight">
               {t('custom.title', '定制信息与设计稿核对 (防纠纷关键流程)')}
             </h2>
-            <p className="text-xs text-stone-700">
+            <p className="text-xs text-stone-700 mt-0.5">
               {t('custom.sub', '规范品牌识别、定制祝福语及设计稿确认状态，规避生产纠纷')}
             </p>
           </div>
@@ -80,25 +82,25 @@ export const CustomizationSection: React.FC<CustomizationSectionProps> = ({
       </div>
 
       {/* CRITICAL: 设计稿确认状态流转栏 (防纠纷机制) */}
-      <div className="mb-7 p-4 sm:p-5 rounded-2xl bg-stone-50 border border-stone-200 shadow-2xs">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2">
+      <div className="mb-7 p-4.5 sm:p-5 rounded-2xl bg-stone-50/70 border border-stone-200/90 shadow-2xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3.5 gap-2.5">
           <div className="flex items-center gap-2">
-            <FileCheck className="w-4 h-4 text-emerald-700 shrink-0" />
+            <FileCheck className="w-4 h-4 text-emerald-800 shrink-0" />
             <span className="text-xs font-bold text-stone-900">
               {t('custom.proofStatus', '【重点】设计稿确认状态 (防纠纷机制)')}
             </span>
           </div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-[11px] text-stone-700 whitespace-nowrap">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <span className="text-xs text-stone-700 whitespace-nowrap font-medium">
               {t('scenario.current', '当前')}:
-              <strong className="text-stone-900 font-semibold ml-1">
+              <strong className="text-emerald-950 font-bold ml-1.5 bg-white px-2 py-0.5 rounded-md border border-stone-200 shadow-2xs">
                 {DESIGN_STATUS_STEPS.find(s => s.key === data.designStatus)?.label}
               </strong>
             </span>
             <button
               type="button"
               onClick={() => setShowProofPreview(true)}
-              className="inline-flex items-center gap-1 text-xs text-emerald-700 hover:text-emerald-900 bg-white border border-stone-200 hover:border-emerald-300 px-2.5 py-1 rounded-md transition cursor-pointer whitespace-nowrap"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-800 hover:text-emerald-950 bg-white border border-stone-200 hover:border-emerald-300 px-3 py-1.5 rounded-xl shadow-2xs transition cursor-pointer whitespace-nowrap"
             >
               <Eye className="w-3.5 h-3.5" />
               <span>{t('custom.previewProof', '在线预览 3D 设计稿与色卡')}</span>
@@ -116,24 +118,24 @@ export const CustomizationSection: React.FC<CustomizationSectionProps> = ({
                 key={step.key}
                 type="button"
                 onClick={() => onChange({ designStatus: step.key })}
-                className={`p-2.5 rounded-xl border text-left transition cursor-pointer flex flex-col justify-between min-w-0 ${
+                className={`p-3 rounded-xl border text-left transition cursor-pointer flex flex-col justify-between min-w-0 shadow-2xs ${
                   isCurrent
-                    ? `${step.color} shadow-xs font-semibold`
+                    ? `${step.color} shadow-xs font-bold ring-2 ring-emerald-700/30`
                     : isPassed
-                    ? 'bg-white border-emerald-200 text-stone-800'
-                    : 'bg-stone-100/60 border-stone-200 text-stone-700'
+                    ? 'bg-white border-emerald-300/80 text-stone-900 hover:bg-emerald-50/40'
+                    : 'bg-stone-100/70 border-stone-200/80 text-stone-700 hover:bg-white'
                 }`}
               >
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-[10px] font-mono text-stone-700">0{idx + 1}</span>
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-[10px] font-mono font-bold text-stone-700">0{idx + 1}</span>
                   {isPassed ? (
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
                   ) : (
-                    <div className="w-3 h-3 rounded-full border border-stone-300 shrink-0" />
+                    <div className="w-3.5 h-3.5 rounded-full border border-stone-300 shrink-0" />
                   )}
                 </div>
                 <div>
-                  <div className="text-xs font-bold leading-snug">{step.label}</div>
+                  <div className="text-xs font-bold leading-snug truncate">{step.label}</div>
                   <div className="text-[10px] text-stone-700 line-clamp-1 mt-0.5">{step.desc}</div>
                 </div>
               </button>
@@ -141,14 +143,14 @@ export const CustomizationSection: React.FC<CustomizationSectionProps> = ({
           })}
         </div>
 
-        <div className="mt-3 text-[11px] text-amber-800 flex items-center gap-1.5 bg-amber-50/80 p-2.5 rounded-lg border border-amber-200/60 leading-snug">
+        <div className="mt-3.5 text-xs text-amber-900 flex items-center gap-2 bg-amber-50 border border-amber-200/80 p-3 rounded-xl leading-relaxed">
           <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
           <span>{t('custom.proofAlert', '建议增加设计稿确认状态：客户须在线预览3D样稿并核对文字无误后，方可锁定排产，杜绝错别字及印刷后生产纠纷。')}</span>
         </div>
       </div>
 
       {/* 1. Logo 定制 */}
-      <div className="mb-6 p-4 rounded-xl border border-stone-200 bg-stone-50/30">
+      <div className="mb-6 p-4.5 rounded-xl border border-stone-200/90 bg-stone-50/40 shadow-2xs">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="text-xs font-bold text-stone-900">{t('custom.logo', '是否印制客户品牌 Logo')}</span>
@@ -165,15 +167,15 @@ export const CustomizationSection: React.FC<CustomizationSectionProps> = ({
         </div>
 
         {data.hasLogo && (
-          <div className="space-y-3.5 pt-2 border-t border-stone-200 animate-in fade-in">
+          <div className="space-y-4 pt-3 border-t border-stone-200/80 animate-in fade-in">
             {/* Logo File Upload */}
             <div>
-              <label className="block text-[11px] font-semibold text-stone-700 mb-1">
+              <label className="block text-[11px] font-bold text-stone-700 mb-1.5">
                 {t('custom.uploadLogo', '上传 Logo 矢量文件 (AI / EPS / PDF / 高清PNG)')}
               </label>
               <div 
                 onClick={() => fileInputRef.current?.click()}
-                className="border-2 border-dashed border-stone-300 hover:border-emerald-600 rounded-xl p-3.5 text-center cursor-pointer bg-white transition flex flex-col items-center justify-center gap-1.5"
+                className="border-2 border-dashed border-stone-300 hover:border-emerald-600 rounded-xl p-4 text-center cursor-pointer bg-white transition flex flex-col items-center justify-center gap-1.5 shadow-2xs"
               >
                 <input
                   ref={fileInputRef}
@@ -182,9 +184,9 @@ export const CustomizationSection: React.FC<CustomizationSectionProps> = ({
                   className="hidden"
                   onChange={handleSimulatedLogoUpload}
                 />
-                <UploadCloud className="w-5 h-5 text-emerald-700" />
+                <UploadCloud className="w-6 h-6 text-emerald-700" />
                 <div className="text-xs text-stone-700">
-                  <span className="font-semibold text-emerald-800">{t('doc.btnCopy', '点击上传')}</span> {t('custom.orDrag', '或将 Logo 文件拖拽至此')}
+                  <span className="font-bold text-emerald-800">{t('doc.btnCopy', '点击上传')}</span> {t('custom.orDrag', '或将 Logo 文件拖拽至此')}
                 </div>
                 <div className="text-[10px] text-stone-700">
                   {t('custom.recommendVector', '优先推荐 AI / EPS / PDF 矢量图，可直接提取制版菲林')}
@@ -192,15 +194,15 @@ export const CustomizationSection: React.FC<CustomizationSectionProps> = ({
               </div>
 
               {data.logoFileName && (
-                <div className="mt-2 flex items-center justify-between p-2 rounded-lg bg-emerald-50 border border-emerald-200 text-xs">
-                  <div className="flex items-center gap-2 text-emerald-900 font-medium">
+                <div className="mt-2.5 flex items-center justify-between p-2.5 rounded-xl bg-emerald-50/80 border border-emerald-200 text-xs shadow-2xs">
+                  <div className="flex items-center gap-2 text-emerald-950 font-semibold">
                     <FileText className="w-4 h-4 text-emerald-700 shrink-0" />
                     <span className="truncate">{t('custom.uploaded', '已绑定矢量源文件')}: {data.logoFileName}</span>
                   </div>
                   <button
                     type="button"
                     onClick={() => onChange({ logoFileName: undefined })}
-                    className="text-stone-700 hover:text-red-500 cursor-pointer p-0.5"
+                    className="text-stone-400 hover:text-rose-600 cursor-pointer p-1 rounded-md hover:bg-rose-50"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -209,15 +211,15 @@ export const CustomizationSection: React.FC<CustomizationSectionProps> = ({
             </div>
 
             {/* Logo Position & Craft */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               <div>
-                <label className="block text-[11px] font-semibold text-stone-700 mb-1 whitespace-nowrap">
+                <label className="block text-[11px] font-bold text-stone-700 mb-1.5 whitespace-nowrap">
                   {t('custom.logoPosition', 'Logo 印制位置')}
                 </label>
                 <select
                   value={data.logoPosition}
                   onChange={(e) => onChange({ logoPosition: e.target.value })}
-                  className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-stone-300 bg-white truncate"
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 bg-white truncate shadow-2xs focus:ring-2 focus:ring-emerald-700/20 focus:border-emerald-700"
                 >
                   {LOGO_POSITIONS.map(pos => (
                     <option key={pos} value={pos}>{pos}</option>
@@ -226,13 +228,13 @@ export const CustomizationSection: React.FC<CustomizationSectionProps> = ({
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-stone-700 mb-1 whitespace-nowrap">
+                <label className="block text-[11px] font-bold text-stone-700 mb-1.5 whitespace-nowrap">
                   {t('custom.logoCraft', 'Logo 工艺工艺方式')}
                 </label>
                 <select
                   value={data.logoCraft}
                   onChange={(e) => onChange({ logoCraft: e.target.value })}
-                  className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-stone-300 bg-white truncate"
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 bg-white truncate shadow-2xs focus:ring-2 focus:ring-emerald-700/20 focus:border-emerald-700"
                 >
                   {LOGO_CRAFTS.map(craft => (
                     <option key={craft} value={craft}>{craft}</option>
@@ -245,13 +247,25 @@ export const CustomizationSection: React.FC<CustomizationSectionProps> = ({
       </div>
 
       {/* 2. 文案定制 (Custom Copywriting) */}
-      <div className="mb-6 p-4 rounded-xl border border-stone-200 bg-white">
-        <label className="block text-xs font-bold text-stone-900 mb-3">
-          {t('custom.copywritingTitle', '礼盒包装专属文案定制')}
-        </label>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div className="mb-6 p-4.5 rounded-xl border border-stone-200/90 bg-white shadow-2xs">
+        <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+          <label className="block text-xs font-bold text-stone-900">
+            {t('custom.copywritingTitle', '礼盒包装专属文案定制')}
+          </label>
+          {onOpenAICopywrite && (
+            <button
+              type="button"
+              onClick={onOpenAICopywrite}
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold border border-indigo-200/70 transition cursor-pointer shadow-2xs active:scale-95 group"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-indigo-600 group-hover:rotate-12 transition-transform" />
+              <span>✨ AI 智能撰写主题文案与贺词</span>
+            </button>
+          )}
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
           <div>
-            <span className="block text-[11px] font-semibold text-stone-700 mb-1 whitespace-nowrap">
+            <span className="block text-[11px] font-bold text-stone-700 mb-1.5 whitespace-nowrap">
               {t('custom.boxTitle', '定制礼盒主题名称')}
             </span>
             <input
@@ -259,11 +273,11 @@ export const CustomizationSection: React.FC<CustomizationSectionProps> = ({
               value={data.boxTitle}
               onChange={(e) => onChange({ boxTitle: e.target.value })}
               placeholder={t('custom.boxTitlePlaceholder', '例如：岁序茶礼 · 智创未来')}
-              className="w-full px-3 py-1.5 text-xs rounded-lg border border-stone-300 bg-stone-50/50 hover:bg-white focus:bg-white"
+              className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 bg-stone-50/40 hover:bg-white focus:bg-white shadow-2xs focus:ring-2 focus:ring-emerald-700/20 focus:border-emerald-700 text-stone-900"
             />
           </div>
           <div>
-            <span className="block text-[11px] font-semibold text-stone-700 mb-1 whitespace-nowrap">
+            <span className="block text-[11px] font-bold text-stone-700 mb-1.5 whitespace-nowrap">
               {t('custom.slogan', '企业 / 品牌 Slogan')}
             </span>
             <input
@@ -271,11 +285,11 @@ export const CustomizationSection: React.FC<CustomizationSectionProps> = ({
               value={data.brandSlogan}
               onChange={(e) => onChange({ brandSlogan: e.target.value })}
               placeholder={t('custom.sloganPlaceholder', '例如：一杯好茶，至真诚意')}
-              className="w-full px-3 py-1.5 text-xs rounded-lg border border-stone-300 bg-stone-50/50 hover:bg-white focus:bg-white"
+              className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 bg-stone-50/40 hover:bg-white focus:bg-white shadow-2xs focus:ring-2 focus:ring-emerald-700/20 focus:border-emerald-700 text-stone-900"
             />
           </div>
           <div>
-            <span className="block text-[11px] font-semibold text-stone-700 mb-1 whitespace-nowrap">
+            <span className="block text-[11px] font-bold text-stone-700 mb-1.5 whitespace-nowrap">
               {t('custom.blessing', '专属贺卡 / 腰封祝福文案')}
             </span>
             <input
@@ -283,37 +297,37 @@ export const CustomizationSection: React.FC<CustomizationSectionProps> = ({
               value={data.blessingText}
               onChange={(e) => onChange({ blessingText: e.target.value })}
               placeholder={t('custom.blessingPlaceholder', '例如：十年并肩同路，茶香致敬知音')}
-              className="w-full px-3 py-1.5 text-xs rounded-lg border border-stone-300 bg-stone-50/50 hover:bg-white focus:bg-white"
+              className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 bg-stone-50/40 hover:bg-white focus:bg-white shadow-2xs focus:ring-2 focus:ring-emerald-700/20 focus:border-emerald-700 text-stone-900"
             />
           </div>
         </div>
       </div>
 
       {/* 3. 图案设计与源文件 */}
-      <div className="p-4 rounded-xl border border-stone-200 bg-stone-50/30">
-        <label className="block text-xs font-bold text-stone-900 mb-2">
+      <div className="p-4.5 rounded-xl border border-stone-200/90 bg-stone-50/40 shadow-2xs">
+        <label className="block text-xs font-bold text-stone-900 mb-2.5">
           {t('custom.designService', '图案设计需求')}
         </label>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4.5">
           <div>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-2.5">
-              <label className="inline-flex items-center text-xs text-stone-700 cursor-pointer">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3.5 mb-3">
+              <label className="inline-flex items-center text-xs text-stone-800 font-medium cursor-pointer">
                 <input
                   type="radio"
                   name="designSource"
                   checked={data.useCustomerDesign}
                   onChange={() => onChange({ useCustomerDesign: true })}
-                  className="text-emerald-700 focus:ring-emerald-600 mr-1.5"
+                  className="text-emerald-700 focus:ring-emerald-600 mr-2"
                 />
                 <span>{t('custom.design.client', '客户自备设计稿 (提供标准1:1展开刀模图)')}</span>
               </label>
-              <label className="inline-flex items-center text-xs text-stone-700 cursor-pointer">
+              <label className="inline-flex items-center text-xs text-stone-800 font-medium cursor-pointer">
                 <input
                   type="radio"
                   name="designSource"
                   checked={!data.useCustomerDesign}
                   onChange={() => onChange({ useCustomerDesign: false, needDesignService: true })}
-                  className="text-emerald-700 focus:ring-emerald-600 mr-1.5"
+                  className="text-emerald-700 focus:ring-emerald-600 mr-2"
                 />
                 <span>{t('custom.needStudioRadio', '需要工坊协助')}</span>
               </label>
@@ -324,7 +338,7 @@ export const CustomizationSection: React.FC<CustomizationSectionProps> = ({
                 <button
                   type="button"
                   onClick={() => designFileInputRef.current?.click()}
-                  className="w-full py-2 px-3 border border-stone-300 hover:border-emerald-600 rounded-lg text-xs text-stone-700 hover:text-emerald-800 bg-white flex items-center justify-center gap-1.5 transition cursor-pointer"
+                  className="w-full py-2.5 px-3.5 border border-stone-300 hover:border-emerald-600 rounded-xl text-xs font-semibold text-stone-700 hover:text-emerald-900 bg-white flex items-center justify-center gap-2 transition cursor-pointer shadow-2xs"
                 >
                   <input
                     ref={designFileInputRef}
@@ -337,51 +351,51 @@ export const CustomizationSection: React.FC<CustomizationSectionProps> = ({
                   <span>{t('custom.uploadDielineBtn', '上传展开刀模源文件 (AI / PDF / PSD)')}</span>
                 </button>
                 {data.designFileName && (
-                  <p className="text-[11px] text-emerald-800 font-mono mt-1">
+                  <p className="text-xs text-emerald-900 font-mono font-medium mt-1.5">
                     ✓ {t('custom.uploaded', '已绑定矢量源文件')}：{data.designFileName}
                   </p>
                 )}
               </div>
             ) : (
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => onChange({ designServiceType: 'free_basic' })}
-                    className={`p-2 rounded-lg border text-left text-xs transition cursor-pointer ${
+                    className={`p-2.5 rounded-xl border text-left text-xs transition cursor-pointer shadow-2xs ${
                       data.designServiceType === 'free_basic'
-                        ? 'border-emerald-700 bg-emerald-50 text-emerald-900 font-semibold'
-                        : 'border-stone-200 bg-white text-stone-600'
+                        ? 'border-emerald-700 bg-emerald-50 text-emerald-950 font-bold ring-1 ring-emerald-700/30'
+                        : 'border-stone-200/90 bg-white text-stone-700 hover:border-stone-300'
                     }`}
                   >
-                    <div>{t('custom.design.standard', '工坊基础排版 (免费协助居中排版)')}</div>
-                    <div className="text-[10px] text-stone-700 font-normal">{t('custom.freeBasicDesc', '提供Logo+文案免费微调套模')}</div>
+                    <div className="font-bold">{t('custom.design.standard', '工坊基础排版 (免费协助居中排版)')}</div>
+                    <div className="text-[10px] text-stone-700 font-normal mt-0.5">{t('custom.freeBasicDesc', '提供Logo+文案免费微调套模')}</div>
                   </button>
                   <button
                     type="button"
                     onClick={() => onChange({ designServiceType: 'pro_custom' })}
-                    className={`p-2 rounded-lg border text-left text-xs transition cursor-pointer ${
+                    className={`p-2.5 rounded-xl border text-left text-xs transition cursor-pointer shadow-2xs ${
                       data.designServiceType === 'pro_custom'
-                        ? 'border-emerald-700 bg-emerald-50 text-emerald-900 font-semibold'
-                        : 'border-stone-200 bg-white text-stone-600'
+                        ? 'border-emerald-700 bg-emerald-50 text-emerald-950 font-bold ring-1 ring-emerald-700/30'
+                        : 'border-stone-200/90 bg-white text-stone-700 hover:border-stone-300'
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="truncate">{t('custom.design.custom', '原创高端定制')}</span>
-                      <span className="text-[10px] text-amber-700 font-mono shrink-0">+¥500</span>
+                      <span className="truncate font-bold">{t('custom.design.custom', '原创高端定制')}</span>
+                      <span className="text-[10px] text-amber-800 font-mono font-bold shrink-0 bg-amber-50 px-1.5 py-0.5 rounded">+¥500</span>
                     </div>
-                    <div className="text-[10px] text-stone-700 font-normal">{t('custom.proDesignDesc', '资深茶礼设计师一对一原创手绘')}</div>
+                    <div className="text-[10px] text-stone-700 font-normal mt-0.5">{t('custom.proDesignDesc', '资深茶礼设计师一对一原创手绘')}</div>
                   </button>
                 </div>
               </div>
             )}
           </div>
 
-          <div className="p-3 bg-white rounded-lg border border-stone-200 text-xs text-stone-600 leading-relaxed">
-            <span className="font-semibold text-stone-900 block mb-1">{t('custom.guaranteeTitle', '设计服务质检承诺：')}</span>
-            1. {t('custom.guarantee1', '提交下单后 24 小时内出具首轮 3D 渲染图与 1:1 印刷刀模核对线；')}<br />
-            2. {t('custom.guarantee2', '免费赠送 3 次文案与细节调整修改；')}<br />
-            3. {t('custom.guarantee3', '生产前发送高清打样数码色卡对照，双向盖章签字后方可开机印刷。')}
+          <div className="p-3.5 bg-white rounded-xl border border-stone-200/90 text-xs text-stone-700 leading-relaxed shadow-2xs">
+            <span className="font-bold text-stone-900 block mb-1.5">{t('custom.guaranteeTitle', '设计服务质检承诺：')}</span>
+            <span className="text-stone-700">1. {t('custom.guarantee1', '提交下单后 24 小时内出具首轮 3D 渲染图与 1:1 印刷刀模核对线；')}</span><br />
+            <span className="text-stone-700">2. {t('custom.guarantee2', '免费赠送 3 次文案与细节调整修改；')}</span><br />
+            <span className="text-stone-700">3. {t('custom.guarantee3', '生产前发送高清打样数码色卡对照，双向盖章签字后方可开机印刷。')}</span>
           </div>
         </div>
       </div>

@@ -15,12 +15,14 @@ import { OrderWorkflowStatus } from '../types';
 import { PRESET_TEMPLATES } from '../data/presets';
 import { useLanguage } from '../i18n/LanguageContext';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { Cpu } from 'lucide-react';
 
 interface HeaderProps {
   orderNo: string;
   orderStatus: OrderWorkflowStatus;
   onOpenLifecycle: () => void;
   onOpenPrintModal: () => void;
+  onOpenAIStudio?: () => void;
   onSelectPreset: (presetId: string) => void;
   onSaveDraft: () => void;
   onSubmitOrder: () => void;
@@ -32,6 +34,7 @@ export const Header: React.FC<HeaderProps> = ({
   orderStatus,
   onOpenLifecycle,
   onOpenPrintModal,
+  onOpenAIStudio,
   onSelectPreset,
   onSaveDraft,
   onSubmitOrder,
@@ -97,6 +100,23 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Quick Actions, Language Switcher & Preset Selector */}
           <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+            {/* AI Packaging Studio Button */}
+            {onOpenAIStudio && (
+              <button
+                type="button"
+                onClick={onOpenAIStudio}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-teal-600/30 bg-gradient-to-r from-teal-50 via-cyan-50 to-teal-50 hover:from-teal-100 hover:to-cyan-100 text-teal-900 font-bold text-xs transition-all shadow-xs cursor-pointer active:scale-95 group ring-1 ring-teal-500/20"
+                title="开启 AI 智能方案定制、成本智审与品牌文案工坊"
+              >
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-600"></span>
+                </span>
+                <Cpu className="w-3.5 h-3.5 text-teal-700 group-hover:rotate-12 transition-transform" />
+                <span className="bg-gradient-to-r from-teal-800 to-cyan-800 bg-clip-text text-transparent font-bold">AI 智造顾问</span>
+              </button>
+            )}
+
             {/* Multi-language switcher */}
             <LanguageSwitcher />
 
