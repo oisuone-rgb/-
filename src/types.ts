@@ -90,6 +90,9 @@ export interface BoxPackagingInfo {
   unitsPerOuterBox: number; // 多少套打一个箱 (如 5/10/12 套/箱)
 }
 
+export type PackagingInfo = BoxPackagingInfo;
+export type PackagingType = BoxCategory;
+
 export type DesignProofStatus = 
   | 'not_submitted' // 未提交
   | 'designing' // 设计中

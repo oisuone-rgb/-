@@ -2,6 +2,7 @@ import React from 'react';
 import { Printer, Download, X, ShieldCheck, CheckCircle } from 'lucide-react';
 import { OrderRecord } from '../types';
 import { formatCurrency } from '../utils/pricing';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface QuotationPrintModalProps {
   isOpen: boolean;
@@ -14,6 +15,7 @@ export const QuotationPrintModal: React.FC<QuotationPrintModalProps> = ({
   onClose,
   order
 }) => {
+  const { t } = useLanguage();
   if (!isOpen) return null;
 
   const handlePrint = () => {
@@ -27,7 +29,7 @@ export const QuotationPrintModal: React.FC<QuotationPrintModalProps> = ({
         <div className="px-6 py-3.5 bg-stone-900 text-white flex items-center justify-between no-print">
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-5 h-5 text-amber-400" />
-            <span className="text-sm font-bold">官方定制茶叶礼盒报价单与订购确认书</span>
+            <span className="text-sm font-bold">{t('modal.printTitle', '官方定制茶叶礼盒报价单与订购确认书')}</span>
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -36,12 +38,12 @@ export const QuotationPrintModal: React.FC<QuotationPrintModalProps> = ({
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-semibold cursor-pointer"
             >
               <Printer className="w-3.5 h-3.5" />
-              <span>打印或另存为 PDF</span>
+              <span>{t('modal.printBtn', '打印或另存为 PDF')}</span>
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 rounded-lg text-stone-700 hover:text-white cursor-pointer"
+              className="p-1.5 rounded-lg text-stone-300 hover:text-white cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -54,10 +56,10 @@ export const QuotationPrintModal: React.FC<QuotationPrintModalProps> = ({
           <div className="flex items-start justify-between border-b-2 border-emerald-900 pb-5 mb-6">
             <div>
               <div className="text-2xl font-bold tracking-tight text-emerald-950 font-serif">
-                格领包装工坊 · 茶礼包装定制中心
+                格领包装科技 · 茶礼包装定制中心
               </div>
               <div className="text-xs text-stone-700 mt-1">
-                GELING PACKAGING STUDIO · B2B CUSTOM GIFT PACKAGING
+                GELING PACKAGING TECHNOLOGY · B2B CUSTOM GIFT PACKAGING
               </div>
               <div className="text-xs text-stone-700 mt-0.5">
                 工坊热线：400-880-9898 · 产业基地：浙江省温州市龙港新城格领包装科技

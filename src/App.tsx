@@ -57,8 +57,11 @@ import {
   FileCheck2,
   Share2
 } from 'lucide-react';
+import { LanguageProvider, useLanguage } from './i18n/LanguageContext';
 
-export default function App() {
+function AppContent() {
+  const { t } = useLanguage();
+
   // Current active order state
   const [order, setOrder] = useState<OrderRecord>(() => {
     const saved = localStorage.getItem('tea_custom_order_draft');
@@ -133,13 +136,13 @@ export default function App() {
   // 保存草稿
   const handleSaveDraft = () => {
     localStorage.setItem('tea_custom_order_draft', JSON.stringify(order));
-    showToast('已成功保存当前询价单配置至本地草稿箱！');
+    showToast(t('app.saveDraft') + ' OK!');
   };
 
   // 提交订单
   const handleSubmitOrder = () => {
     if (!order.customer.customerName || !order.customer.contactPerson || !order.customer.phone) {
-      showToast('⚠️ 请先完善第1模块中的客户名称、联系人及手机号码！');
+      showToast('⚠️ ' + t('customer.name') + ' & ' + t('customer.contact') + ' & ' + t('customer.phone'));
       scrollToSection('section-customer');
       return;
     }
@@ -153,7 +156,7 @@ export default function App() {
         updatedAt: new Date().toLocaleString()
       }));
       setShowSubmitSuccessBanner(true);
-      showToast('🎉 询价下单需求已成功提交！工坊已自动下发核价工单');
+      showToast('🎉 ' + t('banner.successTitle') + order.orderNo);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }, 800);
   };
@@ -199,10 +202,10 @@ export default function App() {
               </div>
               <div>
                 <h3 className="font-bold text-sm sm:text-base">
-                  询价订单已成功接收并进入核价流程！单号：{order.orderNo}
+                  {t('banner.successTitle')}{order.orderNo}
                 </h3>
                 <p className="text-xs text-emerald-100">
-                  专属资深包装设计师与茶道顾问已收到您的需求，将在 2 小时内出具正式带章核价单并联系您确认打样。
+                  {t('banner.successDesc')}
                 </p>
               </div>
             </div>
@@ -212,14 +215,14 @@ export default function App() {
                 onClick={() => setIsPrintModalOpen(true)}
                 className="px-3 py-1.5 rounded-lg bg-white/20 hover:bg-white/30 text-white text-xs font-semibold backdrop-blur cursor-pointer"
               >
-                查看正式报价单
+                {t('banner.viewQuote')}
               </button>
               <button
                 type="button"
                 onClick={() => setShowSubmitSuccessBanner(false)}
                 className="px-3 py-1.5 rounded-lg bg-white text-emerald-900 text-xs font-semibold cursor-pointer"
               >
-                知道了
+                {t('banner.dismiss')}
               </button>
             </div>
           </div>
@@ -229,8 +232,8 @@ export default function App() {
         <div className="mb-6 p-3.5 rounded-2xl bg-white border border-stone-200 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-xs">
             <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
-            <span className="font-bold text-stone-900">快速填入客户常用行业定制场景：</span>
-            <span className="text-stone-700 hidden sm:inline">一键加载完整工艺参数、茶叶规格与批量配送数据</span>
+            <span className="font-bold text-stone-900">{t('scenario.bannerTitle')}</span>
+            <span className="text-stone-700 hidden sm:inline">{t('scenario.bannerSub')}</span>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             {PRESET_TEMPLATES.map(p => (
@@ -299,10 +302,10 @@ export default function App() {
             <div className="p-6 rounded-2xl bg-white border border-emerald-800/20 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <h4 className="font-bold text-stone-900 text-base">
-                  所有 7 项定制参数已确认无误？
+                  {t('bottom.confirm')}
                 </h4>
                 <p className="text-xs text-stone-700 mt-0.5">
-                  点击提交后，系统将自动生成正式订购流水并同步推送至工厂排产生管系统。
+                  {t('bottom.sub')}
                 </p>
               </div>
               <div className="flex items-center gap-2.5">
@@ -311,7 +314,7 @@ export default function App() {
                   onClick={() => setIsPrintModalOpen(true)}
                   className="px-4 py-2 text-xs rounded-xl border border-stone-300 hover:bg-stone-50 text-stone-700 font-semibold cursor-pointer"
                 >
-                  预览正式报价单
+                  {t('card.preview')}
                 </button>
                 <button
                   type="button"
@@ -319,7 +322,7 @@ export default function App() {
                   disabled={isSubmitting}
                   className="px-5 py-2 text-xs rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold shadow-sm shadow-emerald-900/20 cursor-pointer disabled:opacity-50"
                 >
-                  {isSubmitting ? '提交中...' : '提交询价下单'}
+                  {isSubmitting ? t('app.submitting') : t('app.submitInquiry')}
                 </button>
               </div>
             </div>
@@ -367,5 +370,13 @@ export default function App() {
         order={order}
       />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <LanguageProvider>
+      <AppContent />
+    </LanguageProvider>
   );
 }

@@ -13,6 +13,8 @@ import {
 } from 'lucide-react';
 import { OrderWorkflowStatus } from '../types';
 import { PRESET_TEMPLATES } from '../data/presets';
+import { useLanguage } from '../i18n/LanguageContext';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 interface HeaderProps {
   orderNo: string;
@@ -25,21 +27,6 @@ interface HeaderProps {
   isSubmitting?: boolean;
 }
 
-const STATUS_MAP: Record<OrderWorkflowStatus, { label: string; color: string }> = {
-  draft: { label: '草稿', color: 'bg-slate-100 text-slate-700 border-slate-300' },
-  pending_quote: { label: '待报价 / 待核价', color: 'bg-amber-50 text-amber-800 border-amber-300' },
-  pending_confirm: { label: '待客户确认', color: 'bg-blue-50 text-blue-800 border-blue-300' },
-  pending_payment: { label: '待支付定金', color: 'bg-orange-50 text-orange-800 border-orange-300' },
-  designing: { label: '包装设计中', color: 'bg-purple-50 text-purple-800 border-purple-300' },
-  pending_proof_confirm: { label: '待确认设计稿', color: 'bg-indigo-50 text-indigo-800 border-indigo-300' },
-  pending_production: { label: '待排期生产', color: 'bg-cyan-50 text-cyan-800 border-cyan-300' },
-  in_production: { label: '精工生产中', color: 'bg-emerald-50 text-emerald-800 border-emerald-300' },
-  quality_check: { label: '出厂质检', color: 'bg-teal-50 text-teal-800 border-teal-300' },
-  pending_shipping: { label: '待打包发货', color: 'bg-blue-50 text-blue-800 border-blue-300' },
-  shipped: { label: '已发货物流中', color: 'bg-sky-50 text-sky-800 border-sky-300' },
-  completed: { label: '订单已完成', color: 'bg-emerald-100 text-emerald-900 border-emerald-400' }
-};
-
 export const Header: React.FC<HeaderProps> = ({
   orderNo,
   orderStatus,
@@ -50,6 +37,23 @@ export const Header: React.FC<HeaderProps> = ({
   onSubmitOrder,
   isSubmitting = false
 }) => {
+  const { t } = useLanguage();
+
+  const STATUS_MAP: Record<OrderWorkflowStatus, { label: string; color: string }> = {
+    draft: { label: t('status.draft'), color: 'bg-slate-100 text-slate-700 border-slate-300' },
+    pending_quote: { label: t('status.pending_quote'), color: 'bg-amber-50 text-amber-800 border-amber-300' },
+    pending_confirm: { label: t('status.pending_confirm'), color: 'bg-blue-50 text-blue-800 border-blue-300' },
+    pending_payment: { label: t('status.pending_payment'), color: 'bg-orange-50 text-orange-800 border-orange-300' },
+    designing: { label: t('status.designing'), color: 'bg-purple-50 text-purple-800 border-purple-300' },
+    pending_proof_confirm: { label: t('status.pending_proof_confirm'), color: 'bg-indigo-50 text-indigo-800 border-indigo-300' },
+    pending_production: { label: t('status.pending_production'), color: 'bg-cyan-50 text-cyan-800 border-cyan-300' },
+    in_production: { label: t('status.in_production'), color: 'bg-emerald-50 text-emerald-800 border-emerald-300' },
+    quality_check: { label: t('status.quality_check'), color: 'bg-teal-50 text-teal-800 border-teal-300' },
+    pending_shipping: { label: t('status.pending_shipping'), color: 'bg-blue-50 text-blue-800 border-blue-300' },
+    shipped: { label: t('status.shipped'), color: 'bg-sky-50 text-sky-800 border-sky-300' },
+    completed: { label: t('status.completed'), color: 'bg-emerald-100 text-emerald-900 border-emerald-400' }
+  };
+
   const currentStatus = STATUS_MAP[orderStatus] || STATUS_MAP.pending_quote;
 
   return (
@@ -63,19 +67,19 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2.5 flex-wrap">
-                <h1 className="text-lg sm:text-xl font-bold text-stone-900 tracking-tight">
-                  格领包装工坊 · 茶叶礼盒智能询价与下单系统
+                <h1 id="header-app-title" className="text-lg sm:text-xl font-bold text-stone-900 tracking-tight">
+                  {t('app.title')}
                 </h1>
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border bg-amber-50 text-amber-900 border-amber-300">
                   <ShieldCheck className="w-3.5 h-3.5 mr-1 text-amber-700" />
-                  B2B企业定制专版
+                  {t('app.badge.b2b')}
                 </span>
               </div>
               <div className="flex items-center gap-3 text-xs text-stone-700 mt-0.5 flex-wrap">
-                <span className="font-mono text-stone-700">单号: <strong className="text-stone-800 font-semibold">{orderNo}</strong></span>
+                <span className="font-mono text-stone-700">{t('app.orderNo')}: <strong className="text-stone-800 font-semibold">{orderNo}</strong></span>
                 <span className="text-stone-700">|</span>
                 <span className="flex items-center gap-1">
-                  当前状态:
+                  {t('app.currentStatus')}:
                   <span className={`px-2 py-0.5 rounded-md text-[11px] font-semibold border ${currentStatus.color}`}>
                     {currentStatus.label}
                   </span>
@@ -85,14 +89,17 @@ export const Header: React.FC<HeaderProps> = ({
                   className="inline-flex items-center text-emerald-800 hover:text-emerald-900 hover:underline cursor-pointer ml-1"
                 >
                   <GitBranch className="w-3.5 h-3.5 mr-0.5" />
-                  订单流程进度
+                  {t('app.lifecycle')}
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Quick Actions & Preset Selector */}
+          {/* Quick Actions, Language Switcher & Preset Selector */}
           <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+            {/* Multi-language switcher */}
+            <LanguageSwitcher />
+
             {/* Presets dropdown */}
             <div className="relative group">
               <button
@@ -100,11 +107,11 @@ export const Header: React.FC<HeaderProps> = ({
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-stone-300 bg-stone-50 hover:bg-stone-100 text-stone-700 text-xs font-medium transition cursor-pointer"
               >
                 <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-                <span>载入经典模板</span>
+                <span>{t('app.loadPreset')}</span>
               </button>
               <div className="absolute right-0 mt-1 w-64 bg-white rounded-xl shadow-lg border border-stone-200 py-1.5 hidden group-hover:block z-50 animate-in fade-in slide-in-from-top-1">
                 <div className="px-3 py-1 text-[11px] font-semibold text-stone-700 uppercase tracking-wider">
-                  快速载入行业参考方案
+                  {t('app.presetTitle')}
                 </div>
                 {PRESET_TEMPLATES.map(p => (
                   <button
@@ -128,10 +135,10 @@ export const Header: React.FC<HeaderProps> = ({
               type="button"
               onClick={onOpenPrintModal}
               className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-stone-300 bg-white hover:bg-stone-50 text-stone-700 text-xs font-medium transition cursor-pointer"
-              title="生成并打印标准定制茶叶报价单"
+              title={t('app.officialQuotation')}
             >
               <Printer className="w-3.5 h-3.5 text-stone-600" />
-              <span className="hidden sm:inline">正式报价单</span>
+              <span className="hidden sm:inline">{t('app.officialQuotation')}</span>
             </button>
 
             {/* Save draft */}
@@ -141,7 +148,7 @@ export const Header: React.FC<HeaderProps> = ({
               className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-stone-300 bg-white hover:bg-stone-50 text-stone-700 text-xs font-medium transition cursor-pointer"
             >
               <FileText className="w-3.5 h-3.5 text-stone-600" />
-              <span>保存草稿</span>
+              <span>{t('app.saveDraft')}</span>
             </button>
 
             {/* Submit inquiry */}
@@ -152,7 +159,7 @@ export const Header: React.FC<HeaderProps> = ({
               className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-semibold shadow-sm shadow-emerald-900/20 transition cursor-pointer disabled:opacity-50"
             >
               <Send className="w-3.5 h-3.5" />
-              <span>{isSubmitting ? '提交中...' : '提交询价下单'}</span>
+              <span>{isSubmitting ? t('app.submitting') : t('app.submitInquiry')}</span>
             </button>
           </div>
         </div>
